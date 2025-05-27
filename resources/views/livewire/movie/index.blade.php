@@ -48,21 +48,8 @@
         </div>
     @endif
 </div>
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (window.Echo) {
-        console.log('Echo is present');
-        if (window.Echo.connector && window.Echo.connector.socket) {
-            console.log('Echo connector and socket are present');
-        } else {
-            console.log('Echo connector or socket is missing');
-        }
-    } else {
-        console.log('Echo is NOT present');
-    }
-});
-</script>
-{{-- <script>
 (() => {
     const showtimeId = @json($showtimeId);
 
@@ -93,4 +80,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 })();
-</script> --}}
+</script>

@@ -25,11 +25,8 @@ class Index extends Component
 
     public function getListeners()
     {
-        Log::info("Getting listeners for showtimeId: " . $this->showtimeId);
         if ($this->showtimeId) {
-            Log::info("Listening to channel: showtime-seat.{$this->showtimeId}");
             return [
-                // "echo:showtime-seat.{$this->showtimeId},SeatBooked" => 'handleSeatBooked',
                 "echo-channel:showtime-seat.{$this->showtimeId},seat.booked" => 'handleSeatBooked',
 
             ];
@@ -45,7 +42,6 @@ class Index extends Component
 
     public function selectMovie($movieId)
     {
-        Log::info("Movie selected: " . $movieId);
         $this->selectedMovie = Movie::with(['showtimes.hall', 'showtimes.showtimeSeats'])->find($movieId);
         $this->showtimes = $this->selectedMovie->showtimes;
         $this->selectedShowtime = null;
@@ -54,7 +50,6 @@ class Index extends Component
 
     public function selectShowtime($showtimeId)
     {
-        Log::info("Showtime selected: " . $showtimeId);
         $this->showtimeId = $showtimeId;
 
         // Refresh showtime to get fresh seats
@@ -62,19 +57,15 @@ class Index extends Component
         $this->seats = $this->selectedShowtime->showtimeSeats;
         $this->selectedShowtimeSeats = [];
 
-        // Force Livewire to re-register listeners
-        // $this->dispatch('$refresh');
     }
 
     public function resetListeners()
     {
-        Log::info("Resetting listeners");
         $this->dispatch('$refresh'); // triggers re-render (fine)
     }
 
     public function selectSeat($seatId)
     {
-        Log::info("Seat selected: " . $seatId);
         $seat = ShowtimeSeat::where('seat_id', $seatId)
             ->where('showtime_id', $this->showtimeId)
             ->first();
@@ -85,14 +76,8 @@ class Index extends Component
 
         $seat->update(['is_available' => false]);
 
-        // Broadcast to others
-        // event(new SeatBooked($seat));
-
         try {
-            Log::info("Emitting event for seat: " . $seatId);
             broadcast(new SeatBooked($seat))->toOthers();
-            event(new \App\Events\SeatBooked($seat));
-            Log::info("Event emitted successfully");
         } catch (\Exception $e) {
             Log::error("Error emitting event: " . $e->getMessage());
         }
