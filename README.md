@@ -44,4 +44,10 @@
     npm run dev
     ```
 
+9. ** Run Laravel Reverb (WebSockets server):**
+    ```bash
+    php artisan reverb:start
+    ```
+    This will start the WebSockets server required for real-time features.
+
 Your Laravel app should now be running at [http://localhost:8000](http://localhost:8000).
